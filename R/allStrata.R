@@ -17,6 +17,27 @@
 #' @export
 #'
 #' @examples
+#'
+#' rm(list = ls())
+#' #set.seed(6)
+#' eps <- 1e-13
+#' N <- 36
+#' n <-  6
+#' pik <- rep(n/N,N)
+#' pik <- inclusionprobabilities(runif(N),n)
+#' pikInit <- pik
+#'
+#' tb <- runif(2,min = -0.001,max = 0.001)
+#' tb
+#' X <- as.matrix(expand.grid(seq(1,sqrt(N),1),seq(1,sqrt(N),1)))
+#' tore = TRUE
+#' toreBound = sqrt(N)
+#' comment = TRUE
+#' bound = 1
+#' l_Strata <- allStrata(X,pik,ref = 7,tb,pikInit,tore = TRUE,toreBound = 6)
+#' plot(l_Strata,X)
+#' u_Strata <- unionStrata(l_Strata,ref)
+#' plot(u_Strata,X)
 allStrata <- function(X,pik,ref,tb,pikInit,
                       bound = 1.0,multi = TRUE,tore = FALSE,toreBound = -1.0,
                       comment = FALSE){
@@ -51,6 +72,7 @@ allStrata <- function(X,pik,ref,tb,pikInit,
     # d_ref <- distRef(X,ref,as.vector(as.numeric(tbl[tt,])),tore,toreBound)
     for(k in 1:nrow(X)){
       # print(k)
+
       if(pik[k]> eps){# we can't loop on null unit and on the
       # d <- distRef(X,k,as.vector(as.numeric(tbl[tt,])),tore,toreBound)
       # tmp <- strataUnitk(d,d_ref,pik,ref,k,pikInit,bound)

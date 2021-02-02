@@ -1,0 +1,471 @@
+\documentclass[12pt,english]{article}
+\input{./header/header}
+
+\begin{document}
+
+\maketitle
+
+<<setup, include=FALSE>>=
+devtools::load_all(".")
+library(ggplot2)
+library(sampling)
+library(gridExtra)
+library(ggvoronoi)
+library(grid)
+library(lattice)
+library(ggplot2)
+library(ggrepel)
+library(scico)
+
+library(kableExtra)
+library(magrittr)
+library(plyr)
+
+# theme plot of the paper
+theme_wave <- function(...) {
+  theme_minimal() +
+    theme(
+      text = element_text(family="sans",color = "black",size = 9),
+      panel.spacing = unit(2, "lines"),
+      # title
+      plot.title = element_text(hjust = 0.5,size = 9),
+      # axes
+      axis.line=element_blank(),
+      axis.ticks=element_blank(),
+      # legend
+      legend.position="bottom",
+      legend.title = element_text(size = 9,vjust = +1.0),
+      legend.key.size = unit(0.3, "cm"),
+      legend.key.width = unit(0.7,"cm") ,
+      # background colors
+      panel.background=element_blank(),
+      panel.border=element_rect(colour = "black",fill = "transparent"),
+      panel.grid.major=element_blank(),
+      panel.grid.minor=element_blank(),
+      # keep edge black facet_wrap
+      # strip.background = element_rect(fill="white"),
+      strip.text =element_text(color = "black",size = 8)
+      )
+}
+
+
+knit_hooks$set(document = function(x) {sub('\\usepackage[]{color}', '\\usepackage{xcolor}', x, fixed = TRUE)})
+opts_chunk$set(fig.path='figure/image-', cache.path='cache/latex-')
+options(tikzDocumentDeclaration = "\\documentclass{article}")
+
+pathresults <- file.path(getwd(),"results/",fsep ="/")
+if(!dir.exists(pathresults)){
+   dir.create(pathresults)
+}
+
+
+thm = knit_theme$get("fine_blue")  # parse the theme to a list
+knit_theme$set(thm)
+
+@
+
+
+\begin{abstract}
+In this paper we propose a definition of multidimensional systematic sampling from a finite spatial population with equal or unequal probabilities.
+
+\textbf{Key words}: optimal design, spread sampling, stratification
+\end{abstract}
+\newpage
+
+%-----------------------------------------------------------------------------------
+% Introduction
+%-----------------------------------------------------------------------------------
+
+\section{Introduction}
+
+%-----------------------------------------------------------------------------------
+% Notation
+%-----------------------------------------------------------------------------------
+
+\section{Notation}
+
+
+Consider a finite population $U$ of size $N$ whose units can be defined by labels $k\in\{1,2,\dots,N\}$. Let $\mathcal{S} = \{s | s\subset U\}$ be the set of all possible samples. A sampling design is defined by a probability distribution $p(.)$ on $\mathcal{S}$ such that
+
+$$
+p(s) \geq 0 \text{ for all } s\in \mathcal{S} \text{ and }\sum_{ s\in \mathcal{S}}p(s) = 1.
+$$
+
+A random sample $S$ is a random vector that maps elements of $\mathcal{S}$ to an $N$ vector of 0 or 1 such that $\textrm{P}(S = s) =
+p(s)$. Define $a_k(S)$, for $k = 1,\dots,N$:
+
+$$
+\aaa_k =
+\left\{\begin{array}{lll} 1 & \text{ if } k\in S\\ 0 & \text{ otherwise} . \end{array} \right.
+$$
+
+Then a sample can be denoted by means of a vector notation:
+$
+ \aaag^\top = (\aaa_1,\aaa_2,\dots,\aaa_N).
+$ For each unit of the population, the inclusion probability $0\leq\pi_k\leq 1$ is defined as the probability that unit $k$ is selected into sample $S$:
+\begin{equation*}\label{eq:pik}
+ \pi_k = \textrm{P}(k \in S) = \textrm{E}(\aaa_k) =  \sum_{s\in S | k \in s} p(s), \text{ for all } k\in U.
+\end{equation*}
+
+Let $\pig^\top=(\pi_1,\dots,\pi_N)$ be the vector of inclusion probabilities. Then, $\textrm{E}({\aaag})=\pig.$ Let also $\pi_{k\ell}$ be the probability of selecting the units $k$ and $\ell$ together in the sample, with $\pi_{kk} = \pi_k$. The matrix of second-order inclusion probabilities is given by $\Pi = \E(\aaag\aaag^\top)$. In many applications, inclusion probabilities are such that samples have a fixed size $n$. Let the set of all samples that have fixed size equal to $n$ be defined by
+ \begin{equation*}\label{eq:sn} \mathcal{S}_n = \left\{ \aaag\in \{0,1\}^N ~~\bigg|~~ \sum_{k
+= 1}^N \aaa_k = n \right\} .
+ \end{equation*}
+
+The sample is generally selected with the aim of estimating some population parameters. Let $y_k$ denote a real number associated with unit $k\in U$, usually called the variable of interest. For example, the total
+$$
+Y=\sum_{k\in U} y_k
+$$
+can be estimated by using the classical Horvitz-Thompson estimator of the total defined by
+\begin{equation}\label{eq:HT}
+\widehat{Y}_{HT} = \sum_{k\in U} \frac{y_k a_k}{\pi_k}.
+\end{equation}
+
+
+Usually, some auxiliary information $\xb_k^\top = (x_{k1},x_{k2},\dots,x_{kq}) \in\mathbb{R}^q$  regarding the population units is available.
+In the particular case of spatial sampling, a set of spatial coordinates  $\zb_k^\top = (z_{k1},z_{k2},\dots,z_{kp}) \in \mathbb{R}^p$ is supposed to be available, where $p$ is the dimension of the considered space. A sampling design is said to be balanced on the auxiliary variables $x_k$ if and only if it satisfies the balancing equations
+\begin{equation*}\label{eq:balance}
+  \widehat{\Xb} = \sum_{k\in S} \frac{\xb_k}{\pi_k} = \sum_{k\in U} \xb_k = \Xb.
+\end{equation*}
+
+
+
+
+
+%-----------------------------------------------------------------------------------
+%	Systematic sampling
+%-----------------------------------------------------------------------------------
+
+
+\section{Systematic sampling}
+
+
+\begin{algorithm}[htb!]
+\caption{Algorithm for systematic sampling}\label{algo:sys1d}
+Let $\pig = (\pi_1,\dots,\pi_N)$. Generate a random start $u$ uniformly distributed $\mathcal{U}(0,1)$. Let $a,b\in\R$, for $k = 1,\dots,N$ repeat the following procedure:
+\begin{enumerate}
+\item $b = a$.
+\item $a = a + \pi_k$.
+\item if $\lfloor a \rfloor \neq \lfloor b \rfloor$ select $k$.
+\end{enumerate}
+\end{algorithm}
+
+
+
+
+%-----------------------------------------------------------------------------------
+%	Generalization systematic sampling
+%-----------------------------------------------------------------------------------
+
+\section{Generalization of systematic sampling}
+
+%-----------------------------------------------------------------------------------
+%	Strata
+%-----------------------------------------------------------------------------------
+
+
+\subsection{Strata}
+In order to generalize a systematic sampling in more than one dimension, we need to properly define strata that will step by step cover the space. We want to find a clever procedure to select a strata that have a target unit at the edge. First of all let define a strata.
+
+\begin{defn}
+Let define the \textbf{strata of the unit } $\boldsymbol k$ as the subset of units $S_k\subset U$ centered around $k$ such that, starting from the unit $k$, gradually nearest neighbors are added such that the sum of the inclusion probabilities inside $S_k$ exceed 1. Meaning that if we denote $L$ the number of units in $S_k$, the inclusion probabilities satisfies:
+$$\sum_{\ell = 1}^L\pi_\ell > 1 \text{ with } \sum_{\ell = 1}^{L-1} \pi_\ell  \leq 1. $$
+In order to reach exactly 1, we cut the inclusion probability of the farthest unit such that the sum inside the strata reach exactly 1. The farthest unit is modified as the following way:
+$$ \pi_L = 1- \sum_{\ell = 1}^{L-1} \pi_\ell. $$
+\end{defn}
+
+
+If all distances are different, the strata of the unit $k$ has only one unit whose inclusion probability is modified. But we are looking for strata that have target unit and modified unit at the maximal distance. Suppose that the index of the target unit is labeled as $j$. We could then redefined the modified unit such that we take the farthest unit from the target unit $j$ and not from the center $k$.
+
+\begin{defn}
+Let define the \textbf{strata of the unit } $\boldsymbol k $\textbf{ targeted on } $\boldsymbol j$ as the subset $S_k^j \subset U$, such that instead of modify the farthest unit from the unit $k$, we modify the farthest unit of the unit $j$. This strata is well-defined only if the unit $j$ is contained in $S_k$.
+\end{defn}
+We could then defined the union of the whole strata that contains in any way the targeted unit.
+\begin{defn}Let's define the \textbf{raised strata} of the unit $j$ as the set $R_j\subset U$ such that
+$$ R_j = \bigcup_{k \in U} S_k^j.$$
+\end{defn}
+It means that $R_j$ contains also strata such that $j$ is at the opposite edge of the modified unit in strata $S_k^j$. We could then defined the strata that are possible candidate.
+
+\begin{defn} Define the \textbf{candidate units} as the units that has never been completely added in any strata in $R_j$.
+\end{defn}
+
+
+
+<<k_for_example,echo = FALSE,warning=FALSE,results='hide'>>=
+
+set.seed(5)
+
+eps <- 1e-13
+N <- 250
+n <- 10
+pikInit <- rep(n/N,N)
+pik <- pikInit
+tb <- runif(2)/100
+X <- as.matrix(cbind(runif(N),runif(N)))
+tore = FALSE
+toreBound = 0
+
+
+ref = 100
+pik[ref] <- runif(1,min = eps,max = pik[ref]-eps)
+
+l_Strata <- allStrata(X,pik = pik,ref = ref,
+                tb = tb,
+                tore = tore,
+                toreBound = toreBound,
+                pikInit = pik)
+
+
+X_dat <- as.data.frame(X)
+colnames(X_dat) <- c("x","y")
+
+@
+
+
+
+<<all_strata,echo = FALSE,warning=FALSE,results='hide',fig.height=5,fig.width=7,fig.cap='Illustration of the convex hull of the four definition of the different strata.'>>=
+
+ex_strata <- 4
+X_chull <- as.data.frame(X_dat[l_Strata[[ex_strata]]$strata,])
+X_chull <- X_chull[chull(X_chull),]
+p1 <- ggplot() +
+  geom_polygon(data = X_chull,aes(x = x,y = y),fill = "grey80",colour = "black",alpha = 0.4)+
+  geom_point(data = X_dat,aes(x = x,y = y),shape = 1,alpha = 0.4)+
+  geom_point(data = X_dat[ref,],aes(x = x,y = y),shape = 16,colour = "black")+
+  geom_point(data = X_dat[l_Strata[[ex_strata]]$k,],aes(x = x,y = y),shape = 16,colour = "red")+
+  ggtitle("Strata of the unit k targeted on j")+
+  theme_wave()+
+  theme(axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position = "none")
+
+p2 <- ggplot()
+
+for(i in 1:length(l_Strata)){
+  X_chull <- as.data.frame(X_dat[l_Strata[[i]]$strata,])
+  X_chull <- X_chull[chull(X_chull),]
+  p2 <- p2 +
+    geom_polygon(data = X_chull,aes(x = x,y = y),fill = "grey80",colour = "black",alpha = 0.4)
+}
+
+p2 <- p2 +
+  geom_point(data = X_dat,aes(x = x,y = y),shape = 1,alpha = 0.4)+
+  geom_point(data = X_dat[ref,],aes(x = x,y = y),shape = 16,colour = "black")+
+  ggtitle("Raised strata of j")+
+  theme_wave()+
+  theme(axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position = "none")
+
+
+u_Strata <- unionStrata(l_Strata,ref = ref)
+
+p3 <- p2
+
+for(i in 1:length(u_Strata)){
+  X_chull <- as.data.frame(X_dat[u_Strata[[i]]$strata,])
+  X_chull <- X_chull[chull(X_chull),]
+  p3 <- p3 +
+    geom_polygon(data = X_chull,aes(x = x,y = y),fill = "transparent",colour = "deepskyblue2",alpha = 0.4)+
+    geom_point(data = X_dat[u_Strata[[i]]$modif,],aes(x = x,y = y),shape = 16,colour = "deepskyblue2")
+}
+p3 <- p3 +  geom_point(data = X_dat[ref,],aes(x = x,y = y),shape = 16,colour = "black")+
+  ggtitle("Strata where j is at the edge")+
+  theme_wave()+
+  theme(axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position = "none")
+
+g_Strata <- goodStrata(u_Strata )
+  X_chull <- as.data.frame(X_dat[g_Strata$strata,])
+  X_chull <- X_chull[chull(X_chull),]
+
+p4 <- ggplot() +
+  geom_point(data = X_dat,aes(x = x,y = y),shape = 1,alpha = 0.4)+
+  geom_point(data = X_dat[ref,],aes(x = x,y = y),shape = 16,colour = "black")+
+  geom_polygon(data = X_chull,aes(x = x,y = y),fill = "deepskyblue2",colour = "deepskyblue2",alpha = 0.4)+
+  geom_point(data = X_dat[g_Strata$modif,],aes(x = x,y = y),shape = 16,colour = "black")+
+  ggtitle("Selected strata")+
+  theme_wave()+
+  theme(axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position = "none")
+
+p <- grid.arrange(p1, p2,p3,p4, ncol = 2)
+print(p)
+@
+
+
+
+<<k_for_example2,echo = FALSE,warning=FALSE,results='hide'>>=
+
+set.seed(5)
+
+eps <- 1e-13
+N <- 144
+n <-  24
+pik <- rep(n/N,N)
+
+
+tb <- runif(2)/100
+
+X <- as.matrix(expand.grid(seq(1,sqrt(N),1),seq(1,sqrt(N),1)))
+tore = TRUE
+toreBound = sqrt(N)
+
+ref = 32
+pik[ref] <- runif(1,min = eps,max = pik[ref]-eps)
+
+l_Strata <- allStrata(X,pik = pik,ref = ref,
+                tb = tb,
+                tore = tore,
+                toreBound = toreBound,
+                pikInit = pik)
+
+
+X_dat <- as.data.frame(X)
+colnames(X_dat) <- c("x","y")
+
+@
+
+
+
+
+
+<<all_stratagrid,echo = FALSE,warning=FALSE,results='hide',fig.height=5,fig.width=7,fig.cap='Illustration of the convex hull of the four definition of the different strata.'>>=
+
+ex_strata <- 4
+X_chull <- as.data.frame(X_dat[l_Strata[[ex_strata]]$strata,])
+X_chull <- X_chull[chull(X_chull),]
+p1 <- ggplot() +
+  geom_polygon(data = X_chull,aes(x = x,y = y),fill = "grey80",colour = "black",alpha = 0.4)+
+  geom_point(data = X_dat,aes(x = x,y = y),shape = 1,alpha = 0.4)+
+  geom_point(data = X_dat[ref,],aes(x = x,y = y),shape = 16,colour = "black")+
+  geom_point(data = X_dat[l_Strata[[ex_strata]]$k,],aes(x = x,y = y),shape = 16,colour = "red")+
+  ggtitle("Strata of the unit k targeted on j")+
+  theme_wave()+
+  theme(axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position = "none")
+
+p2 <- ggplot()
+
+for(i in 1:length(l_Strata)){
+  X_chull <- as.data.frame(X_dat[l_Strata[[i]]$strata,])
+  X_chull <- X_chull[chull(X_chull),]
+  p2 <- p2 +
+    geom_polygon(data = X_chull,aes(x = x,y = y),fill = "grey80",colour = "black",alpha = 0.4)
+}
+
+p2 <- p2 +
+  geom_point(data = X_dat,aes(x = x,y = y),shape = 1,alpha = 0.4)+
+  geom_point(data = X_dat[ref,],aes(x = x,y = y),shape = 16,colour = "black")+
+  ggtitle("Raised strata of j")+
+  theme_wave()+
+  theme(axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position = "none")
+
+
+u_Strata <- unionStrata(l_Strata,ref = ref)
+
+p3 <- p2
+
+for(i in 1:length(u_Strata)){
+  X_chull <- as.data.frame(X_dat[u_Strata[[i]]$strata,])
+  X_chull <- X_chull[chull(X_chull),]
+  p3 <- p3 +
+    geom_polygon(data = X_chull,aes(x = x,y = y),fill = "transparent",colour = "deepskyblue2",alpha = 0.4)+
+    geom_point(data = X_dat[u_Strata[[i]]$modif,],aes(x = x,y = y),shape = 16,colour = "deepskyblue2")
+}
+p3 <- p3 +  geom_point(data = X_dat[ref,],aes(x = x,y = y),shape = 16,colour = "black")+
+  ggtitle("Strata where j is at the edge")+
+  theme_wave()+
+  theme(axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position = "none")
+
+g_Strata <- goodStrata(u_Strata )
+  X_chull <- as.data.frame(X_dat[g_Strata$strata,])
+  X_chull <- X_chull[chull(X_chull),]
+
+p4 <- ggplot() +
+  geom_point(data = X_dat,aes(x = x,y = y),shape = 1,alpha = 0.4)+
+  geom_point(data = X_dat[ref,],aes(x = x,y = y),shape = 16,colour = "black")+
+  geom_polygon(data = X_chull,aes(x = x,y = y),fill = "deepskyblue2",colour = "deepskyblue2",alpha = 0.4)+
+  geom_point(data = X_dat[g_Strata$modif,],aes(x = x,y = y),shape = 16,colour = "black")+
+  ggtitle("Selected strata")+
+  theme_wave()+
+  theme(axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position = "none")
+
+p <- grid.arrange(p1, p2,p3,p4, ncol = 2)
+print(p)
+@
+
+%-----------------------------------------------------------------------------------
+%	Tore and shifted distance
+%-----------------------------------------------------------------------------------
+
+\subsection{Tore and shifted distance}
+
+
+%-----------------------------------------------------------------------------------
+%	implementation
+%-----------------------------------------------------------------------------------
+
+\subsection{Implementation}
+
+We select a starting unit $j$ with respect to the inclusion probabilities $\pig$. We only select a part of the inclusion probability $u$ distributed as a random variable $\mathcal{U}(0,\pi_j)$. Let's define $\pig^\ast$ the vector of inclusion probabilities such that the $\pi_j$ is replaced by $u$. We then looking at the raised strata $R_j$ of the unit $j$  \\
+
+
+\begin{algorithm}[htb!]
+\caption{Algorithm for systematic sampling}\label{algo:sys}
+Let $\pig_0  = (\pi_1, \dots, \pi_N) = \pig$ for the initialization step. Select a starting unit $j$ with respect to $\pig$. Generate a random start $u$ distributed as a uniform variable $\mathcal{U}(0,\pi_j)$.
+\begin{enumerate}
+  \item Define $\pig^\ast = (\pi_1,\dots,\pi_{j-1},u,\pi_{j+1},\dots,\pi_N)$
+	\item Compute the raised strata $R_j$ using $\pig^\ast$.
+	\item Find the candidate unit that have the minimum distance from the unit $j$ and the modified unit in the strata. Let $i$ be            the index of the modified unit of the selected strata. Let $r_i$ be the quantity not selected in the strata of the unit $i$.
+	\item Update $$\pig^\ast =  (\pi_1,\dots, \pi_{i-1},r_i,\pi_{i+1},\dots,\pi_{j-1},\pi_j-u,\pi_{j+1},\dots,\pi_N)$$
+	\item Repeat 2. to 4. for the non-zero modified inclusion probabilities until you selected the right number of units.
+\end{enumerate}
+\end{algorithm}
+
+
+%-----------------------------------------------------------------------------------
+% Spatial Balance
+%-----------------------------------------------------------------------------------
+
+\section{Spatial Balance}
+
+%-----------------------------------------------------------------------------------
+%	Simulation
+%-----------------------------------------------------------------------------------
+
+\section{Simulation}
+
+%-----------------------------------------------------------------------------------
+%	Discussion
+%-----------------------------------------------------------------------------------
+
+\section{Discussion}
+
+
+\end{document}

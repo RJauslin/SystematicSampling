@@ -14,9 +14,9 @@
 #' set.seed(6)
 #' eps <- 1e-13
 #' N <- 36
-#' n <-  12
+#' n <-  6
 #' pik <- rep(n/N,N)
-#' pik
+#' pik <- inclusionprobabilities(runif(N),n)
 #'
 #' tb <- runif(2,min = -0.001,max = 0.001)
 #' tb
@@ -35,7 +35,17 @@
 #' pikInit <- pik
 #' pik <- pikstar
 #'
-#' strata <- strataComplete(X,pik,ref,k,tb,pikInit)
+#' strata <- strataCompleteLink(X,pik,ref,k,tb,pikInit)
+#' strata <- strataCompleteLink(X,pik,ref,k,tb,pikInit)
+#'
+#'
+#'
+#'
+#'
+#'
+#'
+#'
+#'
 #'
 strataCompleteLink <- function(X,pik,ref,k,tb,pikInit,bound = 1.0,tore = FALSE,toreBound = -1){
 
@@ -92,9 +102,12 @@ strataCompleteLink <- function(X,pik,ref,k,tb,pikInit,bound = 1.0,tore = FALSE,t
         # D_tmp[jjj,] <- distRef(X,ref = strata[jjj],tb = tb,tore = tore,toreBound = toreBound)
       # }
       d_tmp <- apply(D_tmp,MARGIN = 2,FUN = max)
-      d_tmp[iX] <- 100
+      d_tmp[iX] <- 1e9
 
-      }
+    }
+    print(strata)
+
+
     }
   #
   # plot(X)

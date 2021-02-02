@@ -17,6 +17,8 @@
 #'
 #' @examples
 #'
+#'
+#'
 #' ############################# 1D
 #'
 #' rm(list = ls())
@@ -35,6 +37,30 @@
 #' s <- systematic(X,pik,tb,tore,toreBound,comment = TRUE)
 #' plot(X,rep(0,N))
 #' points(X[s],rep(0,n),pch = 16)
+#'
+#' ############################# 2D GRID UNEQUAL
+#'
+#'
+#' rm(list = ls())
+#' #set.seed(2)
+#' # set.seed(8)
+#' # set.seed(3)
+#'  #set.seed(5) # n = 12
+#' set.seed(7)
+#' eps <- 1e-13
+#' N <- 36
+#' n <-  6
+#' pik <- rep(n/N,N)
+#' pik <- sampling::inclusionprobabilities(runif(N),n)
+#'
+#' tb <- runif(2)/100
+#'
+#' X <- as.matrix(expand.grid(seq(1,sqrt(N),1),seq(1,sqrt(N),1)))
+#' tore = TRUE
+#' toreBound = sqrt(N)
+#' comment = TRUE
+#'
+#' s <- systematic(X,pik,tb,tore = tore,toreBound = toreBound,comment = comment)
 #'
 #' ############################# 2D GRID
 #'
@@ -264,8 +290,7 @@ systematic <- function(X,
                               tb = tb,
                               pikInit = pikInit,
                               tore = tore,
-                              toreBound = toreBound,
-                              s_omit = NULL)
+                              toreBound = toreBound)
 
         # remove strata that contains tagged units
         # l_Strata <- l_Strata[!as.vector(do.call(cbind,lapply(l_Strata,function(x){any(tagged %in% x$strata)})))]
@@ -311,7 +336,7 @@ systematic <- function(X,
     }
     class(u_Strata) <- c("u_strata","l_strata")
     # u_Strata <- unionStrata(u_Strata,s_tmp)
-    # plot(u_Strata,X)
+    plot(u_Strata,X)
     ##----------------------------------------------------------------
 
       final <- goodStrata(u_Strata)
@@ -388,7 +413,7 @@ systematic <- function(X,
         points(X[which(pikstar < eps),1],X[which(pikstar < eps),2],pch = 16,col = "red")
         points(X[s,1],X[s,2],pch = 16,col = "black")
         points(X[s[which(pikstar[s] > eps)],1],X[s[which(pikstar[s] > eps)],2],pch = 16,col = "darkturquoise")
-        # Sys.sleep(1)
+        Sys.sleep(5)
       }
 
     }
