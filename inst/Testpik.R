@@ -24,27 +24,27 @@ clusterEvalQ(cl,{
 
 
 ############# 1D
-# N <- 30
-# n <- 5
-# Xcoord <- as.matrix(seq(1,N,1))
-# pik <- inclusionprobabilities(runif(N),n = 5)
-# tb = 0.001
-# tore <- TRUE
-# toreBound <- N
+N <- 30
+n <- 5
+Xcoord <- as.matrix(seq(1,N,1))
+pik <- inclusionprobabilities(runif(N),n = 5)
+tb = 0.001
+tore <- TRUE
+toreBound <- N
 
 
 
 ############# 2D runif
 # set.seed(1)
-N <- 50
-n <- 5
-Xcoord <- as.matrix(cbind(runif(N, min = 1,max = 10),runif(N,min = 1,max = 10)))
-# X <- Xcoord
-pik <- rep(n/N,N)
-tb <- rep(0,2)
-tore = TRUE
-toreBound = 10
-tb = runif(n = 2,min = -0.1,0.1)/100
+# N <- 50
+# n <- 5
+# Xcoord <- as.matrix(cbind(runif(N, min = 1,max = 10),runif(N,min = 1,max = 10)))
+# # X <- Xcoord
+# pik <- rep(n/N,N)
+# tb <- rep(0,2)
+# tore = TRUE
+# toreBound = 10
+# tb = runif(n = 2,min = -0.1,0.1)/100
 
 # s <- systematic(Xcoord,pik,tb = tb,tore = tore,toreBound = toreBound,comment = TRUE)
 # plot(Xcoord)
@@ -63,13 +63,13 @@ f1 <- function(n,Xcoord,pik,tb,tore,toreBound){
   return(systematic(Xcoord,pik = pik,tb = tb,tore = tore,toreBound = toreBound))
 }
 
-# f21D <- function(n,pik){
-#   return(which(UPsystematic(pik)==1))
-# }
-
-f2 <- function(n,Xcoord,pik){
-return(lpm1(pik,Xcoord))
+f21D <- function(n,pik){
+  return(which(UPsystematic(pik)==1))
 }
+
+# f2 <- function(n,Xcoord,pik){
+# return(lpm1(pik,Xcoord))
+# }
 
 
 SIM <- 1000
@@ -82,15 +82,15 @@ l1 <- parLapply(cl = cl,
                 tore = tore,
                 toreBound = toreBound)
 
-# l2 <- parLapply(cl = cl,
-                # X = 1:SIM,
-                # fun = f21D,pik = pik)
-
 l2 <- parLapply(cl = cl,
-                X = 1:SIM,
-                fun = f2,
-                Xcoord = Xcoord,
-                pik = pik)
+X = 1:SIM,
+fun = f21D,pik = pik)
+
+# l2 <- parLapply(cl = cl,
+#                 X = 1:SIM,
+#                 fun = f2,
+#                 Xcoord = Xcoord,
+#                 pik = pik)
 
 p1 <- as.vector(table(do.call(c,l1))/SIM)
 p2 <- as.vector(table(do.call(c,l2))/SIM)

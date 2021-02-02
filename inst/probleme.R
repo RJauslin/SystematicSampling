@@ -52,10 +52,12 @@ k = 1
   tbl <- combTb(tb)
   tt = 2
   k = 9
-  strataCompleteLink(X = X,pik = pik,ref = ref,k = 9,tb = as.vector(as.numeric(tbl[tt,])),
+  strata <- strataCompleteLink(X = X,pik = pik,ref = ref,k = 9,tb = as.vector(as.numeric(tbl[tt,])),
                      pikInit,bound = bound,tore = tore,toreBound = toreBound)
 
   tb = as.vector(as.numeric(tbl[tt,]))
 
+  plot(X)
+  points(X[strata,],pch = 16)
 
 

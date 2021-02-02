@@ -88,7 +88,8 @@ strataCompleteLink <- function(X,pik,ref,k,tb,pikInit,bound = 1.0,tore = FALSE,t
     # idx <- which.min(d_tmp)
     idx <- which_min(d_tmp)
     if(length(idx) > 1){
-      idx <- which( abs(D_tmp[1,]- min(d_tmp)) < 1e-7)
+      # idx <- which( abs(D_tmp[1,]- min(d_tmp)) < 1e-7)
+      idx <- idx[which_min(D_tmp[1,idx])]
     }
 
     # print(pik[i_0[idx]])
@@ -102,10 +103,10 @@ strataCompleteLink <- function(X,pik,ref,k,tb,pikInit,bound = 1.0,tore = FALSE,t
         # D_tmp[jjj,] <- distRef(X,ref = strata[jjj],tb = tb,tore = tore,toreBound = toreBound)
       # }
       d_tmp <- apply(D_tmp,MARGIN = 2,FUN = max)
-      d_tmp[iX] <- 1e9
+      d_tmp[iX] <- 100
 
     }
-    print(strata)
+    # print(strata)
 
 
     }

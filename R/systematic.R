@@ -48,10 +48,10 @@
 #'  #set.seed(5) # n = 12
 #' set.seed(7)
 #' eps <- 1e-13
-#' N <- 36
-#' n <-  6
+#' N <- 144
+#' n <-  24
 #' pik <- rep(n/N,N)
-#' pik <- sampling::inclusionprobabilities(runif(N),n)
+#' #pik <- sampling::inclusionprobabilities(runif(N),n)
 #'
 #' tb <- runif(2)/100
 #'
@@ -336,7 +336,7 @@ systematic <- function(X,
     }
     class(u_Strata) <- c("u_strata","l_strata")
     # u_Strata <- unionStrata(u_Strata,s_tmp)
-    plot(u_Strata,X)
+    # plot(u_Strata,X)
     ##----------------------------------------------------------------
 
       final <- goodStrata(u_Strata)
@@ -413,7 +413,7 @@ systematic <- function(X,
         points(X[which(pikstar < eps),1],X[which(pikstar < eps),2],pch = 16,col = "red")
         points(X[s,1],X[s,2],pch = 16,col = "black")
         points(X[s[which(pikstar[s] > eps)],1],X[s[which(pikstar[s] > eps)],2],pch = 16,col = "darkturquoise")
-        Sys.sleep(5)
+        # Sys.sleep(5)
       }
 
     }
