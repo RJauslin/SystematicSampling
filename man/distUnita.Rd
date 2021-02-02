@@ -37,7 +37,7 @@ we could consider two units on the same column (resp. row) that are on the oppos
                       (x_{k_2} + N_2 - x_{l_2})^2,
                       (x_{k_2} - N_2 - x_{l_2})^2).}
 
-The option \code{toreBound} specify the length of the tore in the case of \eqn{N_1 = N_2 = N}. 
+The option \code{toreBound} specify the length of the tore in the case of \eqn{N_1 = N_2 = N}.
 It is omitted if the \code{tore} option is equal to \code{FALSE}.
 }
 \examples{

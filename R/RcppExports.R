@@ -55,31 +55,31 @@
 #' 
 #' @export
 IB <- function(W, s) {
-    .Call('_SystematicSampling_IB', PACKAGE = 'SystematicSampling', W, s)
+    .Call(`_SystematicSampling_IB`, W, s)
 }
 
 #' @title Squared Euclidean distances of the unit k.
 #'
 #' @description
 #' Calculate the squared Euclidean distance from unit \eqn{k} to the other units.
-#' 
 #'
-#' @param X matrix representing the spatial coordinates. 
+#'
+#' @param X matrix representing the spatial coordinates.
 #' @param k the unit index to be used.
 #' @param tore an optional logical value, if we are considering the distance on a tore. See Details.
 #' @param toreBound an optional numeric value that specify the length of the tore.
 #'
 #'
 #' @details
-#' 
+#'
 #' Let \eqn{\mathbf{x}_k,\mathbf{x}_l} be the spatial coordinates of the unit \eqn{k,l \in U}. The classical euclidean distance is given by
-#' 
+#'
 #' \deqn{d^2(k,l) = (\mathbf{x}_k - \mathbf{x}_l)^\top (\mathbf{x}_k - \mathbf{x}_l). }
-#' 
+#'
 #' When the points are distributed on a \eqn{N_1 \times N_2} regular grid of \eqn{R^2}.
 #' It is possible to consider the units like they were placed on a tore. It can be illustrated by Pac-Man passing through the wall to get away from ghosts. Specifically,
 #' we could consider two units on the same column (resp. row) that are on the opposite have a small distance,
-#' 
+#'
 #' \deqn{ d^2_T(k,l) = min( (x_{k_1} - x_{l_1})^2,
 #'                       (x_{k_1} + N_1 - x_{l_1})^2,
 #'                       (x_{k_1} - N_1 - x_{l_1})^2) +}
@@ -87,15 +87,15 @@ IB <- function(W, s) {
 #'                       (x_{k_2} + N_2 - x_{l_2})^2,
 #'                       (x_{k_2} - N_2 - x_{l_2})^2).}
 #'
-#' The option \code{toreBound} specify the length of the tore in the case of \eqn{N_1 = N_2 = N}. 
+#' The option \code{toreBound} specify the length of the tore in the case of \eqn{N_1 = N_2 = N}.
 #' It is omitted if the \code{tore} option is equal to \code{FALSE}.
 #'
 #' @return a vector of length \eqn{N} that contains the distances from the unit \eqn{k} to all other units.
 #'
 #'
 #' @author Raphaël Jauslin \email{raphael.jauslin@@unine.ch}
-#' 
-#' 
+#'
+#'
 #' @seealso
 #' \code{\link{wpik}}, \code{\link{wave}} and \code{\link[stats]{dist}}.
 #'
@@ -107,31 +107,31 @@ IB <- function(W, s) {
 #'   distUnitk(X,k = 2,tore = FALSE,toreBound = -1)
 #' @export
 distUnitk <- function(X, k, tore, toreBound) {
-    .Call('_SystematicSampling_distUnitk', PACKAGE = 'SystematicSampling', X, k, tore, toreBound)
+    .Call(`_SystematicSampling_distUnitk`, X, k, tore, toreBound)
 }
 
 #' @title Squared Euclidean distances of the unit k.
 #'
 #' @description
 #' Calculate the squared Euclidean distance from unit \eqn{k} to the other units.
-#' 
 #'
-#' @param X matrix representing the spatial coordinates. 
+#'
+#' @param X matrix representing the spatial coordinates.
 #' @param k the unit index to be used.
 #' @param tore an optional logical value, if we are considering the distance on a tore. See Details.
 #' @param toreBound an optional numeric value that specify the length of the tore.
 #'
 #'
 #' @details
-#' 
+#'
 #' Let \eqn{\mathbf{x}_k,\mathbf{x}_l} be the spatial coordinates of the unit \eqn{k,l \in U}. The classical euclidean distance is given by
-#' 
+#'
 #' \deqn{d^2(k,l) = (\mathbf{x}_k - \mathbf{x}_l)^\top (\mathbf{x}_k - \mathbf{x}_l). }
-#' 
+#'
 #' When the points are distributed on a \eqn{N_1 \times N_2} regular grid of \eqn{R^2}.
 #' It is possible to consider the units like they were placed on a tore. It can be illustrated by Pac-Man passing through the wall to get away from ghosts. Specifically,
 #' we could consider two units on the same column (resp. row) that are on the opposite have a small distance,
-#' 
+#'
 #' \deqn{ d^2_T(k,l) = min( (x_{k_1} - x_{l_1})^2,
 #'                       (x_{k_1} + N_1 - x_{l_1})^2,
 #'                       (x_{k_1} - N_1 - x_{l_1})^2) +}
@@ -139,15 +139,15 @@ distUnitk <- function(X, k, tore, toreBound) {
 #'                       (x_{k_2} + N_2 - x_{l_2})^2,
 #'                       (x_{k_2} - N_2 - x_{l_2})^2).}
 #'
-#' The option \code{toreBound} specify the length of the tore in the case of \eqn{N_1 = N_2 = N}. 
+#' The option \code{toreBound} specify the length of the tore in the case of \eqn{N_1 = N_2 = N}.
 #' It is omitted if the \code{tore} option is equal to \code{FALSE}.
 #'
 #' @return a vector of length \eqn{N} that contains the distances from the unit \eqn{k} to all other units.
 #'
 #'
 #' @author Raphaël Jauslin \email{raphael.jauslin@@unine.ch}
-#' 
-#' 
+#'
+#'
 #' @seealso
 #' \code{\link{wpik}}, \code{\link{wave}} and \code{\link[stats]{dist}}.
 #'
@@ -159,7 +159,7 @@ distUnitk <- function(X, k, tore, toreBound) {
 #'   distUnitk(X,k = 2,tore = FALSE,toreBound = -1)
 #' @export
 distUnita <- function(X, a, tore, toreBound) {
-    .Call('_SystematicSampling_distUnita', PACKAGE = 'SystematicSampling', X, a, tore, toreBound)
+    .Call(`_SystematicSampling_distUnita`, X, a, tore, toreBound)
 }
 
 #' @encoding UTF-8
@@ -282,7 +282,7 @@ NULL
 #' 
 #' @export
 sb_vk <- function(pik, X, s) {
-    .Call('_SystematicSampling_sb_vk', PACKAGE = 'SystematicSampling', pik, X, s)
+    .Call(`_SystematicSampling_sb_vk`, pik, X, s)
 }
 
 #' @encoding UTF-8
@@ -300,6 +300,6 @@ sb_vk <- function(pik, X, s) {
 #' 
 #' @export
 systematicDesign <- function(pik) {
-    .Call('_SystematicSampling_systematicDesign', PACKAGE = 'SystematicSampling', pik)
+    .Call(`_SystematicSampling_systematicDesign`, pik)
 }
 
