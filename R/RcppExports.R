@@ -234,42 +234,42 @@ NULL
 
 #' @encoding UTF-8
 #' @title Values \eqn{v_k} to compute the Spatial balance
-#' 
+#'
 #' @description
-#' 
+#'
 #' Calculates the \eqn{v_k} values of the spatial balance developped by Stevens and Olsen (2004) and suggested by Grafström et al. (2012).
-#' 
+#'
 #' @param pik vector of the inclusion probabilities. The length should be equal to \eqn{N}.
 #' @param X matrix representing the spatial coordinates.
 #' @param s A vector of size \eqn{N} with elements equal 0 or 1. The value 1 indicates that the unit is selected while the value 0 is for non-chosen unit.
-#' 
+#'
 #' @details
-#' 
-#' The spatial balance measure based on the Voronoï polygons is defined by 
-#' 
+#'
+#' The spatial balance measure based on the Voronoï polygons is defined by
+#'
 #' \deqn{B(S) = \frac{1}{n}\sum_{k\in S} (v_k -1)^2 .}
-#' 
+#'
 #' The function return the \eqn{v_k} values and is mainly based on the function \code{\link[BalancedSampling:sb]{sb}} of the package \code{BalancedSampling} Grafström and Lisic (2019).
-#' 
+#'
 #' @return A vector of size \eqn{N} with elements equal to the \eqn{v_k} values. If the unit is not selected then the value is equal to 0.
-#' 
+#'
 #' @author Raphaël Jauslin \email{raphael.jauslin@@unine.ch}
-#' 
-#' @references 
-#' 
-#' Grafström, A., Lundström, N.L.P. and Schelin, L. (2012). Spatially balanced sampling through the Pivotal method. 
+#'
+#' @references
+#'
+#' Grafström, A., Lundström, N.L.P. and Schelin, L. (2012). Spatially balanced sampling through the Pivotal method.
 #' \emph{Biometrics}, 68(2), 514-520
-#' 
+#'
 #' Grafström, A., Lisic J. (2019). BalancedSampling: Balanced and Spatially Balanced Sampling. R package version 1.5.5.
 #' https://CRAN.R-project.org/package=BalancedSampling
-#' 
+#'
 #' Stevens, D. L. Jr. and Olsen, A. R. (2004). Spatially balanced sampling of natural resources.
 #' \emph{Journal of the American Statistical Association 99, 262-278}
-#' 
+#'
 #' @seealso
 #' \code{\link[BalancedSampling:sb]{BalancedSampling::sb}}
-#' 
-#' 
+#'
+#'
 #' @examples
 #' N <- 50
 #' n <- 10
@@ -279,10 +279,10 @@ NULL
 #' v <- sb_vk(pik,X,s)
 #' 1/n*sum((v[which(v != 0)]-1)^2)
 #' BalancedSampling::sb(pik,X,which(s == 1))
-#' 
+#'
 #' @export
-sb_vk <- function(pik, X, s) {
-    .Call(`_SystematicSampling_sb_vk`, pik, X, s)
+sb_vk <- function(pik, X, s, tore, toreBound) {
+    .Call(`_SystematicSampling_sb_vk`, pik, X, s, tore, toreBound)
 }
 
 #' @encoding UTF-8

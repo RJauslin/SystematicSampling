@@ -31,6 +31,8 @@ La fonction va boucler sur les unités les plus proche pour trouver la strate te
 }
 \examples{
 
+
+
 ############################# 1D
 
 rm(list = ls())
@@ -49,6 +51,30 @@ comment = TRUE
 s <- systematic(X,pik,tb,tore,toreBound,comment = TRUE)
 plot(X,rep(0,N))
 points(X[s],rep(0,n),pch = 16)
+
+############################# 2D GRID UNEQUAL
+
+
+rm(list = ls())
+#set.seed(2)
+# set.seed(8)
+# set.seed(3)
+ #set.seed(5) # n = 12
+set.seed(7)
+eps <- 1e-13
+N <- 144
+n <-  24
+pik <- rep(n/N,N)
+#pik <- sampling::inclusionprobabilities(runif(N),n)
+
+tb <- runif(2)/100
+
+X <- as.matrix(expand.grid(seq(1,sqrt(N),1),seq(1,sqrt(N),1)))
+tore = TRUE
+toreBound = sqrt(N)
+comment = TRUE
+
+s <- systematic(X,pik,tb,tore = tore,toreBound = toreBound,comment = comment)
 
 ############################# 2D GRID
 

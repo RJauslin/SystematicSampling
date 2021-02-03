@@ -47,15 +47,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // sb_vk
-arma::vec sb_vk(arma::vec pik, arma::mat X, arma::vec s);
-RcppExport SEXP _SystematicSampling_sb_vk(SEXP pikSEXP, SEXP XSEXP, SEXP sSEXP) {
+arma::vec sb_vk(arma::vec pik, arma::mat X, arma::vec s, bool tore, double toreBound);
+RcppExport SEXP _SystematicSampling_sb_vk(SEXP pikSEXP, SEXP XSEXP, SEXP sSEXP, SEXP toreSEXP, SEXP toreBoundSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type pik(pikSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type s(sSEXP);
-    rcpp_result_gen = Rcpp::wrap(sb_vk(pik, X, s));
+    Rcpp::traits::input_parameter< bool >::type tore(toreSEXP);
+    Rcpp::traits::input_parameter< double >::type toreBound(toreBoundSEXP);
+    rcpp_result_gen = Rcpp::wrap(sb_vk(pik, X, s, tore, toreBound));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -75,7 +77,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_SystematicSampling_IB", (DL_FUNC) &_SystematicSampling_IB, 2},
     {"_SystematicSampling_distUnitk", (DL_FUNC) &_SystematicSampling_distUnitk, 4},
     {"_SystematicSampling_distUnita", (DL_FUNC) &_SystematicSampling_distUnita, 4},
-    {"_SystematicSampling_sb_vk", (DL_FUNC) &_SystematicSampling_sb_vk, 3},
+    {"_SystematicSampling_sb_vk", (DL_FUNC) &_SystematicSampling_sb_vk, 5},
     {"_SystematicSampling_systematicDesign", (DL_FUNC) &_SystematicSampling_systematicDesign, 1},
     {NULL, NULL, 0}
 };

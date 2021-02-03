@@ -5,7 +5,7 @@
 \alias{sb_vk}
 \title{Values \eqn{v_k} to compute the Spatial balance}
 \usage{
-sb_vk(pik, X, s)
+sb_vk(pik, X, s, tore, toreBound)
 }
 \arguments{
 \item{pik}{vector of the inclusion probabilities. The length should be equal to \eqn{N}.}
@@ -21,7 +21,7 @@ A vector of size \eqn{N} with elements equal to the \eqn{v_k} values. If the uni
 Calculates the \eqn{v_k} values of the spatial balance developped by Stevens and Olsen (2004) and suggested by Grafström et al. (2012).
 }
 \details{
-The spatial balance measure based on the Voronoï polygons is defined by 
+The spatial balance measure based on the Voronoï polygons is defined by
 
 \deqn{B(S) = \frac{1}{n}\sum_{k\in S} (v_k -1)^2 .}
 
@@ -39,7 +39,7 @@ BalancedSampling::sb(pik,X,which(s == 1))
 
 }
 \references{
-Grafström, A., Lundström, N.L.P. and Schelin, L. (2012). Spatially balanced sampling through the Pivotal method. 
+Grafström, A., Lundström, N.L.P. and Schelin, L. (2012). Spatially balanced sampling through the Pivotal method.
 \emph{Biometrics}, 68(2), 514-520
 
 Grafström, A., Lisic J. (2019). BalancedSampling: Balanced and Spatially Balanced Sampling. R package version 1.5.5.

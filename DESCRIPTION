@@ -18,7 +18,7 @@ Encoding: UTF-8
 LazyData: true
 Imports: Rcpp (>= 1.0.2)
 LinkingTo: Rcpp, RcppArmadillo
-Depends: Matrix
+Depends: Matrix, parallel
 Suggests: 
     knitr,
     rmarkdown,

@@ -31,9 +31,9 @@ rm(list = ls())
 set.seed(6)
 eps <- 1e-13
 N <- 36
-n <-  12
+n <-  6
 pik <- rep(n/N,N)
-pik
+pik <- inclusionprobabilities(runif(N),n)
 
 tb <- runif(2,min = -0.001,max = 0.001)
 tb
@@ -52,6 +52,16 @@ pikstar[s] <- pik_cutted
 pikInit <- pik
 pik <- pikstar
 
-strata <- strataComplete(X,pik,ref,k,tb,pikInit)
+strata <- strataCompleteLink(X,pik,ref,k,tb,pikInit)
+strata <- strataCompleteLink(X,pik,ref,k,tb,pikInit)
+
+
+
+
+
+
+
+
+
 
 }

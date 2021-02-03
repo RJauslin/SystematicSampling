@@ -40,3 +40,26 @@ allStrata(
 \description{
 Find all strata that cover in any way the re unit
 }
+\examples{
+
+rm(list = ls())
+#set.seed(6)
+eps <- 1e-13
+N <- 36
+n <-  6
+pik <- rep(n/N,N)
+pik <- inclusionprobabilities(runif(N),n)
+pikInit <- pik
+
+tb <- runif(2,min = -0.001,max = 0.001)
+tb
+X <- as.matrix(expand.grid(seq(1,sqrt(N),1),seq(1,sqrt(N),1)))
+tore = TRUE
+toreBound = sqrt(N)
+comment = TRUE
+bound = 1
+l_Strata <- allStrata(X,pik,ref = 7,tb,pikInit,tore = TRUE,toreBound = 6)
+plot(l_Strata,X)
+u_Strata <- unionStrata(l_Strata,ref)
+plot(u_Strata,X)
+}
