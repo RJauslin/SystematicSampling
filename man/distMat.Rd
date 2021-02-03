@@ -4,7 +4,7 @@
 \alias{distMat}
 \title{Distance matrix}
 \usage{
-distMat(X, tore = FALSE, toreBound = 0)
+distMat(X, ref, tb, tore = FALSE, toreBound = 0)
 }
 \arguments{
 \item{X}{Coordinates data.frame}
@@ -18,6 +18,10 @@ Return the distance matrix.
 \examples{
 N <- 36
 X <- as.matrix(expand.grid(1:sqrt(N),1:sqrt(N)))
-distMat(X,tore = TRUE,toreBound = 6)
+N <- nrow(X)
+tb = runif(2)/100
+#f <- function(k,Xcoord,tore,toreBound){distUnitk(as.matrix(Xcoord),k =k,tore, toreBound)}
+#system.time(do.call(cbind,lapply(X = 1:N,FUN = f,Xcoord = X,tore = TRUE,toreBound = sqrt(N))))
+system.time(D <- distMat(X,ref = 1,tb,tore = TRUE,toreBound = sqrt(N)))
 
 }
