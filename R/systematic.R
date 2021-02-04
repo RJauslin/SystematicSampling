@@ -34,9 +34,21 @@
 #' comment = TRUE
 #'
 #'
+#'
 #' s <- systematic(X,pik,tb,tore,toreBound,comment = TRUE)
 #' plot(X,rep(0,N))
 #' points(X[s],rep(0,n),pch = 16)
+#'
+#'
+#' rm(list = ls())
+#' N <- 8
+#' X <- as.matrix(seq(1,N,1))
+#' pik <- c(0.2,0.3,0.4,0.7,0.6,0.2,0.1,0.5)
+#' tb = -0.001
+#' tore = TRUE
+#' shift = TRUE
+#' toreBound = 8
+#' s <- systematic(X,pik,tb,tore,toreBound,comment = TRUE)
 #'
 #' ############################# 2D GRID UNEQUAL
 #'
@@ -130,7 +142,7 @@ systematic <- function(X,
 
   N <- nrow(X)
   eps <- 1e-9
-  p <- ggplot2::ggplot()
+  p <- ggplot2::ggplot() + ylim(-1,1)
 
   pikstar <- pik
 
@@ -382,10 +394,11 @@ systematic <- function(X,
     ##----------------------------------------------------------------
     if(comment == TRUE){
       if(ncol(X) == 1){
-        p_tmp <- plot(final,X)
+
+        p <- addStrata(final,X,p)
         # p <- p + p_tmp
         # p <- plot(final,X)
-        print(p_tmp)
+        print(p)
 
         # points(X[which(pikstar < eps)],rep(0,length(which(pikstar < eps))),pch = 16,col = "red")
         # points(X[s],rep(0,length(s)),pch = 16,col = "black")

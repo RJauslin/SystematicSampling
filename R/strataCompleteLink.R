@@ -10,6 +10,11 @@
 #'
 #' @examples
 #'
+#'
+#'
+#' ############################# 2D
+#'
+#'
 #' rm(list = ls())
 #' set.seed(6)
 #' eps <- 1e-13
@@ -41,8 +46,24 @@
 #'
 #'
 #'
+#' ############################# 1D
 #'
+#' rm(list = ls())
+#' eps <- 1e-13
+#' N <- 36
+#' n <- 8
+#' X <- as.matrix(seq(1,N,1))
+#' tb = -0.001
+#' pik <- rep(n/N,N)
+#' shift = TRUE
+#' tore = TRUE
+#' toreBound = N
+#' comment = TRUE
 #'
+#' s <- 5
+#' pikInit <- pik
+#' pik[s[1]] <- runif(1,min = eps,max = pik[s[1]] - eps)
+#' strata <- strataCompleteLink(X,pik,s[1],k = s[1],tb,pikInit)
 #'
 #'
 #'
@@ -177,7 +198,8 @@ strataCompleteLink <- function(X,pik,ref,k,tb,pikInit,bound = 1.0,tore = FALSE,t
 
 
     out <- list(w = w,
-                pik = pikInit,
+                pikInit = pikInit,
+                pik = pik,
                 cum = cum,
                 strata = strata,
                 strata_wo_modif = strata_wo_modif,

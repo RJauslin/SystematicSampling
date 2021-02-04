@@ -191,6 +191,69 @@ It means that $R_j$ contains also strata such that $j$ is at the opposite edge o
 
 
 
+<<1D,echo = FALSE,warning=FALSE,results='hide'>>=
+
+set.seed(5)
+eps <- 1e-13
+N <- 8
+X <- as.matrix(seq(1,N,1))
+pik <- c(0.2,0.3,0.4,0.7,0.6,0.2,0.1,0.5)
+tb = 0.001
+tore = TRUE
+toreBound = 8
+
+pikInit <- pik
+ref = 3
+pik[ref] <- runif(1,min = eps,max = pik[ref]-eps)
+
+l_Strata <- allStrata(X,pik = pik,ref = ref,
+                tb = tb,
+                tore = tore,
+                toreBound = toreBound,
+                pikInit = pikInit)
+
+u_Strata <- unionStrata(l_Strata,ref)
+goodStrata(u_Strata)
+
+l_Strata[[1]]
+p1 <- plot(l_Strata[[1]],X)
+
+l_Strata[[2]]
+dat2 <- data.frame(xmin = c(0.2,0.9),
+                   xmax = c(0.58008578,1.519914),
+                   ymin = c(-0.04,-0.04),
+                   ymax = c(0.04,0.04))
+p1 <-  p1 +   geom_rect(data = dat2,aes(xmin = xmin,xmax = xmax,ymin = ymin,ymax = ymax),alpha = 0.2,colour = "blue",fill = "red2")
+p1
+
+
+l_Strata[[3]]
+dat3 <- data.frame(xmin = c(0.21991422,0.9),
+                   xmax = c(0.58008578,1.6),
+                   ymin = c(-0.03,-0.03),
+                   ymax = c(0.03,0.03))
+
+p1 <-  p1 +   geom_rect(data = dat3,aes(xmin = xmin,xmax = xmax,ymin = ymin,ymax = ymax),alpha = 0.2,colour = "orange",fill = "red3")
+p1
+
+l_Strata[[4]]
+dat4 <- data.frame(xmin = c(0.5,0.9),
+                   xmax = c(0.58008578,1.819914),
+                   ymin = c(-0.02,-0.02),
+                   ymax = c(0.02,0.02))
+
+p1 <-  p1 +
+  geom_rect(data = dat4,aes(xmin = xmin,xmax = xmax,ymin = ymin,ymax = ymax),alpha = 0.2,colour = "green",fill = "green") +
+  theme_wave()
+
+p1
+
+X_dat <- as.data.frame(X)
+colnames(X_dat) <- c("x","y")
+
+@
+
+
 <<k_for_example,echo = FALSE,warning=FALSE,results='hide'>>=
 
 set.seed(5)
